@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Inquiry Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .chat-container {
+            width: 350px;
+            height: 430px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+            display: none;
+        }
+        #user-info-form {
+            margin: 20px;
+        }
+        #user-info-form input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        #submit-btn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="user-info-form">
+        <h3>Enter Your Details</h3>
+        <input type="text" id="first-name" placeholder="First Name" required>
+        <input type="text" id="last-name" placeholder="Last Name" required>
+        <input type="email" id="email" placeholder="Email Address" required>
+        <button id="submit-btn" onclick="startChat()">Start Chat</button>
+    </div>
+
+    <div class="chat-container" id="chatbot">
+        <!-- Embed Dialogflow Chatbot -->
+        <iframe width="350" height="430" allow="microphone;" 
+            src="https://console.dialogflow.com/api-client/demo/embedded/a71d4da0-ae79-49fe-842c-a078acb87828">
+        </iframe>
+    </div>
+
+    <script>
+        let userFirstName;
+        let userLastName;
+        let userEmail;
+
+        // Collect user information and start the chatbot
+        function startChat() {
+            // Get the user details from the form
+            userFirstName = document.getElementById('first-name').value;
+            userLastName = document.getElementById('last-name').value;
+            userEmail = document.getElementById('email').value;
+
+            // Store user details in localStorage for session use
+            localStorage.setItem('userFirstName', userFirstName);
+            localStorage.setItem('userLastName', userLastName);
+            localStorage.setItem('userEmail', userEmail);
+
+            // Hide the form and show the chatbot iframe
+            document.getElementById('user-info-form').style.display = 'none';
+            document.getElementById('chatbot').style.display = 'block';
+
+            // Send a welcome message with the user's name and email to Dialogflow via postMessage
+            setTimeout(() => {
+                const iframe = document.querySelector('iframe');
+                const message = {
+                    type: 'sendMessage',
+                    text: `Hi ${userFirstName}, How can I help you today?`
+                };
+                iframe.contentWindow.postMessage(message, '*');
+            }, 1000); // Wait for iframe to load
+        }
+    </script>
+</body>
+</html>
