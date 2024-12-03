@@ -4,93 +4,102 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>College Inquiry Chatbot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f9;
-            color: #333;
+            font-family: 'Dancing Script', cursive;
+            height: 100vh;
+            background: url('https://www.uc.edu/content/dam/refresh/home/photos/environmental/200616aCampus100a.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
         }
-        .chat-container {
-            width: 350px;
-            height: 430px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            overflow: hidden;
-            display: none;
-        }
-        #user-info-form {
-            margin: 20px;
-        }
-        #user-info-form input {
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7); /* Dark overlay with reduced opacity */
+            z-index: 0;
         }
-        #submit-btn {
-            padding: 10px 20px;
+        .content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+        .content h1 {
+            font-size: 2.5rem;
+            margin: 20px 0;
+            font-weight: 700;
+        }
+        .content button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            color: #fff;
             background-color: #4CAF50;
-            color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .content button:hover {
+            background-color: #45a049;
+        }
+        .chat-container {
+            width: 400px; /* Fixed width */
+            height: 500px; /* Fixed height */
+            background: rgba(0, 0, 0, 0.8); /* Semi-transparent container */
+            border-radius: 10px;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            z-index: 2;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 10px;
         }
     </style>
 </head>
 <body>
-    <div id="user-info-form">
-        <h3>Enter Your Details</h3>
-        <input type="text" id="first-name" placeholder="First Name" required>
-        <input type="text" id="last-name" placeholder="Last Name" required>
-        <input type="email" id="email" placeholder="Email Address" required>
-        <button id="submit-btn" onclick="startChat()">Start Chat</button>
+    <div class="overlay"></div>
+
+    <div class="content" id="welcome-screen">
+        <h1>Hi, I'm your College Inquiry Chatbot. Let's Chat!</h1>
+        <button id="start-chat-btn" onclick="startChat()">Start Chat</button>
     </div>
 
     <div class="chat-container" id="chatbot">
         <!-- Embed Dialogflow Chatbot -->
-        <iframe width="350" height="430" allow="microphone;" 
+        <iframe allow="microphone;" 
             src="https://console.dialogflow.com/api-client/demo/embedded/a71d4da0-ae79-49fe-842c-a078acb87828">
         </iframe>
     </div>
 
     <script>
-        let userFirstName;
-        let userLastName;
-        let userEmail;
-
-        // Collect user information and start the chatbot
+        // Function to start the chatbot
         function startChat() {
-            // Get the user details from the form
-            userFirstName = document.getElementById('first-name').value;
-            userLastName = document.getElementById('last-name').value;
-            userEmail = document.getElementById('email').value;
-
-            // Store user details in localStorage for session use
-            localStorage.setItem('userFirstName', userFirstName);
-            localStorage.setItem('userLastName', userLastName);
-            localStorage.setItem('userEmail', userEmail);
-
-            // Hide the form and show the chatbot iframe
-            document.getElementById('user-info-form').style.display = 'none';
-            document.getElementById('chatbot').style.display = 'block';
-
-            // Send a welcome message with the user's name and email to Dialogflow via postMessage
-            setTimeout(() => {
-                const iframe = document.querySelector('iframe');
-                const message = {
-                    type: 'sendMessage',
-                    text: `Hi ${userFirstName}, How can I help you today?`
-                };
-                iframe.contentWindow.postMessage(message, '*');
-            }, 1000); // Wait for iframe to load
+            // Hide the welcome screen and show the chatbot
+            document.getElementById('welcome-screen').style.display = 'none';
+            document.getElementById('chatbot').style.display = 'flex';
         }
+
+        // Add keyboard functionality for the "Enter" key
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                startChat();
+            }
+        });
     </script>
 </body>
 </html>
